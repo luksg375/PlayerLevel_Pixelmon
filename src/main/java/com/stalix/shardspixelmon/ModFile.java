@@ -5,7 +5,6 @@ import com.pixelmonmod.pixelmon.api.config.api.yaml.YamlConfigFactory;
 import com.stalix.shardspixelmon.command.ExampleCommand;
 import com.stalix.shardspixelmon.command.MoreComplicatedCommand;
 import com.stalix.shardspixelmon.config.ExampleConfig;
-import com.stalix.shardspixelmon.items.Items;
 import com.stalix.shardspixelmon.listener.PixelmonEggHatchExampleListener;
 import com.stalix.shardspixelmon.listener.PokemonSpawnExampleListener;
 import net.minecraftforge.common.MinecraftForge;
@@ -43,8 +42,6 @@ public class ModFile {
         MinecraftForge.EVENT_BUS.register(this);
 
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
-
-        Items.register(bus);
 
         bus.addListener(ModFile::onModLoad);
     }
