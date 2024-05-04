@@ -1,12 +1,57 @@
 {
+  "pixelmon:legendaries/legendary_capture_trigger": {
+    "criteria": {
+      "legendary_capture": "2024-05-01 00:27:27 -0300"
+    },
+    "done": true
+  },
+  "pixelmon:legendaries/lugia_capture_trigger": {
+    "criteria": {
+      "lugia_capture": "2024-05-01 00:27:27 -0300"
+    },
+    "done": true
+  },
+  "minecraft:husbandry/balanced_diet": {
+    "criteria": {
+      "bread": "2024-05-01 00:24:11 -0300"
+    },
+    "done": false
+  },
+  "pixelmon:types/capture_type_trigger": {
+    "criteria": {
+      "capture_any": "2024-05-01 00:27:27 -0300"
+    },
+    "done": true
+  },
+  "minecraft:husbandry/root": {
+    "criteria": {
+      "consumed_item": "2024-04-30 23:42:01 -0300"
+    },
+    "done": true
+  },
+  "minecraft:recipes/decorations/chest": {
+    "criteria": {
+      "has_lots_of_items": "2024-04-30 23:39:12 -0300"
+    },
+    "done": true
+  },
   "pixelmon:pokedex/pokedex_trigger": {
     "criteria": {
       "pokedex_base": "2024-04-27 12:32:48 -0300"
     },
     "done": true
   },
+  "pixelmon:balls/master_ball_capture": {
+    "criteria": {
+      "master_ball_capture": "2024-05-01 00:27:27 -0300"
+    },
+    "done": true
+  },
   "minecraft:adventure/adventuring_time": {
     "criteria": {
+      "minecraft:desert": "2024-05-01 00:26:15 -0300",
+      "minecraft:savanna_plateau": "2024-04-30 23:39:40 -0300",
+      "minecraft:river": "2024-04-30 23:39:39 -0300",
       "minecraft:savanna": "2024-04-27 12:30:47 -0300",
       "minecraft:plains": "2024-04-29 13:45:16 -0300"
     },
