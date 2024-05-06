@@ -45,8 +45,6 @@ public class ModFile {
 
         MinecraftForge.EVENT_BUS.register(this);
 
-        CapabilityManager.INSTANCE.register(ILevelManager.class, new PlayerLevelStorage(), PlayerLevel::new);
-
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 
         bus.addListener(ModFile::onModLoad);

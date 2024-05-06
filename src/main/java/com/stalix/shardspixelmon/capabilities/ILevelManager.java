@@ -4,5 +4,7 @@ public interface ILevelManager {
 
     void setLevel(int level);
     int getLevel();
+    void incrementLevel();
+    void decrementLevel();
 
 }
