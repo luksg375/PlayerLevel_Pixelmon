@@ -2,16 +2,12 @@ package com.stalix.shardspixelmon;
 
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.config.api.yaml.YamlConfigFactory;
-import com.stalix.shardspixelmon.capabilities.ILevelManager;
 import com.stalix.shardspixelmon.command.ExampleCommand;
 import com.stalix.shardspixelmon.command.MoreComplicatedCommand;
 import com.stalix.shardspixelmon.config.ExampleConfig;
 import com.stalix.shardspixelmon.listener.PixelmonEggHatchExampleListener;
 import com.stalix.shardspixelmon.listener.PokemonSpawnExampleListener;
-import com.stalix.shardspixelmon.services.PlayerLevel;
-import com.stalix.shardspixelmon.services.PlayerLevelStorage;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
