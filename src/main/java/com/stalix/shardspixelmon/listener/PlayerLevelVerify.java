@@ -5,14 +5,29 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 @Mod.EventBusSubscriber
 public class PlayerLevelVerify {
 
     @SubscribeEvent
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
 
-        DatabaseConnection conn = new DatabaseConnection();
+        DatabaseConnection dbConnection = new DatabaseConnection();
+        boolean havePlayer = false;
 
-        conn.getConnection()
+    try (Connection conn = dbConnection.getConnection()){
+        Statement stm = conn.createStatement();
+        ResultSet rs = stm.executeQuery("SELECT * FROM ");
+
+
+    }
+    catch (SQLException e) {
+        e.printStackTrace();
+    }
+
     }
 }
