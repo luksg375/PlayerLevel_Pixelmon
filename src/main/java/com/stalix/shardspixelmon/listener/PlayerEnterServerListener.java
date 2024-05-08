@@ -26,7 +26,7 @@ public class PlayerEnterServerListener {
         }
     }
 
-    private static boolean playerExists(Connection conn, String uuid) throws SQLException {
+    protected static boolean playerExists(Connection conn, String uuid) throws SQLException {
         try (PreparedStatement stmt = conn.prepareStatement("SELECT COUNT(*) FROM player_levels WHERE UUID = ?")) {
             stmt.setString(1, uuid);
             try (ResultSet rs = stmt.executeQuery()) {
