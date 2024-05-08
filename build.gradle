@@ -119,8 +119,12 @@ dependencies {
 
     implementation 'org.yaml:snakeyaml:1.29'
 
+    implementation 'com.zaxxer:HikariCP:5.0.0'
+
     // Any other dependencies go here
     // To shade them do `shadow` rather than `implementation`
+
+
 }
 
 tasks.withType(JavaCompile) {

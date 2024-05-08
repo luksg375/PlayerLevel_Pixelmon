@@ -4,7 +4,7 @@ import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.config.api.yaml.YamlConfigFactory;
 import com.stalix.shardspixelmon.command.ExampleCommand;
 import com.stalix.shardspixelmon.command.MoreComplicatedCommand;
-import com.stalix.shardspixelmon.config.ExampleConfig;
+import com.stalix.shardspixelmon.config.DatabaseConfig;
 import com.stalix.shardspixelmon.listener.PixelmonEggHatchExampleListener;
 import com.stalix.shardspixelmon.listener.PokemonSpawnExampleListener;
 import net.minecraftforge.common.MinecraftForge;
@@ -32,7 +32,7 @@ public class ModFile {
 
     private static ModFile instance;
 
-    private ExampleConfig config;
+    private DatabaseConfig config;
 
     public ModFile() {
         instance = this;
@@ -52,6 +52,7 @@ public class ModFile {
         // So any event listener for those mods need to be registered to those specific event buses
         Pixelmon.EVENT_BUS.register(new PixelmonEggHatchExampleListener());
         Pixelmon.EVENT_BUS.register(new PokemonSpawnExampleListener());
+        DatabaseConfig.load("config/ModId/config.yml");
     }
 
     @SubscribeEvent
@@ -60,11 +61,6 @@ public class ModFile {
     }
 
     public void reloadConfig() {
-        try {
-            this.config = YamlConfigFactory.getInstance(ExampleConfig.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @SubscribeEvent
@@ -99,7 +95,7 @@ public class ModFile {
         return LOGGER;
     }
 
-    public static ExampleConfig getConfig() {
+    public static DatabaseConfig getConfig() {
         return instance.config;
     }
 }

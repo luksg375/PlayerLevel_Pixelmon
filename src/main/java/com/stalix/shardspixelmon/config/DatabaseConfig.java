@@ -1,6 +1,7 @@
-package com.stalix.shardspixelmon.config;
+ package com.stalix.shardspixelmon.config;
 
 import com.pixelmonmod.pixelmon.api.config.api.data.ConfigPath;
+import info.pixelmon.repack.org.spongepowered.objectmapping.ConfigSerializable;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
@@ -16,7 +17,12 @@ public class DatabaseConfig {
 
     public static DatabaseConfig load(String configPath) {
         try (InputStream inputStream = Files.newInputStream(Paths.get(configPath))) {
+            if (inputStream == null ) {
+                System.out.println("falha ao carregar o arquivo");
+                return null;
+            }
             Yaml yaml = new Yaml(new Constructor(DatabaseConfig.class));
+            System.out.println("arquivo carregado");
             return yaml.load(inputStream);
         }
         catch (Exception e) {
