@@ -24,15 +24,25 @@ import static com.stalix.shardspixelmon.ModFile.LOGGER;
 public class PlayerLevelUpListener {
 
     @SubscribeEvent
-    public void PlayerLevelUp(LevelUpEvent event) {
+    public void PlayerLevelUp(LevelUpEvent.Pre event) {
 
         try(Connection conn = DatabaseConnection.getConnection()) {
 
             ServerPlayerEntity playerEntity = playerMatch(event.getPlayer().getServer(), event.getPlayer().getLevel(), event.getPlayer().getGameProfile(), event.getPlayer().gameMode, conn, event.getPlayer().getUUID());
             Pokemon pokemon = event.getPokemon();
-            if (Objects.equals(pokemon.getPokemonLevel(), playerEntity.getLevel())) {
-                incrementLevelPlayer(playerEntity.getUUID(), pokemon.getPokemonLevel(), conn);
+
+            if (playerEntity instanceof PlayerLevel) {
+                PlayerLevel playerLevel = (PlayerLevel) playerEntity;
+                System.out.println(pokemon.getPokemonLevel());
+                System.out.println((playerLevel.getLevelPlayer()));
+                if (Objects.equals(pokemon.getPokemonLevel(), playerLevel.getLevelPlayer())) {
+                    incrementLevelPlayer(playerEntity.getUUID(), pokemon.getPokemonLevel(), conn);
+                }
+            } else {
+                System.out.println("Algo deu errado.");
             }
+
+
 
 
 
@@ -44,7 +54,7 @@ public class PlayerLevelUpListener {
     }
 
     private static ServerPlayerEntity playerMatch(MinecraftServer server, ServerWorld world, GameProfile profile, PlayerInteractionManager interactionManager, Connection conn, UUID uuid) throws SQLException {
-        try(PreparedStatement stmt = conn.prepareStatement("SELECT UUID, Level FROM player_levels WHERE UUID = ?")) {
+        try(PreparedStatement stmt = conn.prepareStatement("SELECT UUID, LEVEL FROM player_levels WHERE UUID = ?")) {
             stmt.setString(1, String.valueOf(uuid));
             ResultSet rs = stmt.executeQuery();
 
@@ -61,13 +71,15 @@ public class PlayerLevelUpListener {
     }
 
     private static void incrementLevelPlayer(UUID uuid, int level, Connection conn) throws SQLException {
-        try (PreparedStatement stmt = conn.prepareStatement("UPDATE player_levels SET Level = ? WHERE UUID = ?")) {
-            stmt.setInt(1, level);
+        try (PreparedStatement stmt = conn.prepareStatement("UPDATE player_levels SET LEVEL = ? WHERE UUID = ?")) {
+            stmt.setInt(1, level+1);
+            System.out.println(level);
             stmt.setString(2, String.valueOf(uuid));
+            System.out.println(uuid);
 
             int affectedRows = stmt.executeUpdate();
             if (affectedRows > 0) {
-                System.out.println("O nível do jogador foi atualizado com sucesso! Nível atual: " + level);
+                System.out.println("O nível do jogador foi atualizado com sucesso! Nível atual: " + level+1);
             } else {
                 System.out.println("Nenhum jogador encontrado com UUID:" + uuid);
             }

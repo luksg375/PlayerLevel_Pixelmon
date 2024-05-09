@@ -11,11 +11,11 @@ import net.minecraft.world.server.ServerWorld;
 
 public class PlayerLevel extends ServerPlayerEntity {
 
-    private int level;
+    private int levelPlayer;
 
     public PlayerLevel(MinecraftServer p_i45285_1_, ServerWorld p_i45285_2_, GameProfile p_i45285_3_, PlayerInteractionManager p_i45285_4_, int level) {
         super(p_i45285_1_, p_i45285_2_, p_i45285_3_, p_i45285_4_);
-        this.level = level;
+        this.levelPlayer = level;
     }
 
 
@@ -28,4 +28,14 @@ public class PlayerLevel extends ServerPlayerEntity {
     public boolean isCreative() {
         return false;
     }
+
+    public int getLevelPlayer() {
+        return levelPlayer;
+    }
+
+    public void setLevelPlayer(int levelPlayer) {
+        this.levelPlayer = levelPlayer;
+    }
 }
+
+
