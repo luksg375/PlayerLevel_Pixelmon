@@ -41,11 +41,6 @@ public class PlayerLevelUpListener {
             } else {
                 System.out.println("Algo deu errado.");
             }
-
-
-
-
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
