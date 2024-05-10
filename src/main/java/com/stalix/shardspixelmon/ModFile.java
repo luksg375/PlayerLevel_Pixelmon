@@ -5,6 +5,7 @@ import com.pixelmonmod.pixelmon.api.config.api.yaml.YamlConfigFactory;
 import com.stalix.shardspixelmon.command.ExampleCommand;
 import com.stalix.shardspixelmon.command.MoreComplicatedCommand;
 import com.stalix.shardspixelmon.config.DatabaseConfig;
+import com.stalix.shardspixelmon.listener.LevelVerifyWithPokemons;
 import com.stalix.shardspixelmon.listener.PixelmonEggHatchExampleListener;
 import com.stalix.shardspixelmon.listener.PlayerLevelUpListener;
 import com.stalix.shardspixelmon.listener.PokemonSpawnExampleListener;
@@ -52,7 +53,7 @@ public class ModFile {
         Pixelmon.EVENT_BUS.register(new PixelmonEggHatchExampleListener());
         Pixelmon.EVENT_BUS.register(new PokemonSpawnExampleListener());
         Pixelmon.EVENT_BUS.register(new PlayerLevelUpListener());
-
+        Pixelmon.EVENT_BUS.register(new LevelVerifyWithPokemons());
     }
 
     @SubscribeEvent
