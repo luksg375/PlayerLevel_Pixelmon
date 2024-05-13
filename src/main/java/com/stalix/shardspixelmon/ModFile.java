@@ -1,11 +1,9 @@
 package com.stalix.shardspixelmon;
 
 import com.pixelmonmod.pixelmon.Pixelmon;
-import com.pixelmonmod.pixelmon.api.config.api.yaml.YamlConfigFactory;
 import com.stalix.shardspixelmon.command.ExampleCommand;
 import com.stalix.shardspixelmon.command.MoreComplicatedCommand;
-import com.stalix.shardspixelmon.config.DatabaseConfig;
-import com.stalix.shardspixelmon.listener.LevelVerifyWithPokemons;
+import com.stalix.shardspixelmon.listener.LevelVerifyListener;
 import com.stalix.shardspixelmon.listener.PixelmonEggHatchExampleListener;
 import com.stalix.shardspixelmon.listener.PlayerLevelUpListener;
 import com.stalix.shardspixelmon.listener.PokemonSpawnExampleListener;
@@ -22,8 +20,6 @@ import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.io.IOException;
 
 @Mod(ModFile.MOD_ID)
 @Mod.EventBusSubscriber(modid = ModFile.MOD_ID)
@@ -53,7 +49,7 @@ public class ModFile {
         Pixelmon.EVENT_BUS.register(new PixelmonEggHatchExampleListener());
         Pixelmon.EVENT_BUS.register(new PokemonSpawnExampleListener());
         Pixelmon.EVENT_BUS.register(new PlayerLevelUpListener());
-        Pixelmon.EVENT_BUS.register(new LevelVerifyWithPokemons());
+        Pixelmon.EVENT_BUS.register(new LevelVerifyListener());
     }
 
     @SubscribeEvent
