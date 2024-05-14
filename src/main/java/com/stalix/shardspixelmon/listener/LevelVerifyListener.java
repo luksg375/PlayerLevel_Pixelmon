@@ -3,18 +3,25 @@ package com.stalix.shardspixelmon.listener;
 import com.pixelmonmod.pixelmon.api.events.BattleStartedEvent;
 import com.pixelmonmod.pixelmon.api.events.PokemonSendOutEvent;
 import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
+import com.pixelmonmod.pixelmon.battles.controller.participants.PixelmonWrapper;
 import com.pixelmonmod.pixelmon.battles.controller.participants.PlayerParticipant;
 import com.stalix.shardspixelmon.database.DatabaseConnection;
 import com.stalix.shardspixelmon.entities.PlayerLevel;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
-
+import java.util.stream.Collectors;
+@Mod.EventBusSubscriber(Dist.DEDICATED_SERVER)
 public class LevelVerifyListener {
+
+    List<PixelmonWrapper> pixelmonWrapperList;
 
     @SubscribeEvent
     public void sendOutVerify(PokemonSendOutEvent.Pre event) {
@@ -33,29 +40,40 @@ public class LevelVerifyListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 
     @SubscribeEvent
-    public static void battleVerifyLevelPlayer(BattleStartedEvent event) {
+    public void battleVerifyLevelPlayer(BattleStartedEvent event) {
         BattleStartedEvent bse = new BattleStartedEvent(event.bc, event.participant1, event.participant2);
+
         System.out.println("Evento de batalha iniciado!");
-        Iterator var1 = Arrays.stream(event.participant1).iterator();
-        List<BattleParticipant> battleParticipantList = new ArrayList<>();
-        while (var1.hasNext()) {
-            battleParticipantList.add((BattleParticipant) var1.next());
-            System.out.println(var1.next());
-        }
+        System.out.println(event.participant1.length);
 
-        Iterator var = battleParticipantList.iterator();
+        List<BattleParticipant> battleParticipantList;
 
-        while (var.hasNext()) {
-            PlayerParticipant playerParticipant = (PlayerParticipant) var.next();
-            System.out.println(playerParticipant.player.getName());
-            if (playerParticipant instanceof PlayerParticipant) {
-                playerParticipant.player.sendMessage(new StringTextComponent("Deu certo" + playerParticipant.player.getName()), playerParticipant.player.getUUID());
+        battleParticipantList = Arrays.stream(event.participant1).collect(Collectors.toList());
+
+        List<PixelmonWrapper> pixelmonWrapperList1 = event.bc.getActivePokemon();
+
+        for (BattleParticipant battleParticipant : battleParticipantList) {
+            System.out.println(battleParticipant);
+            System.out.println(battleParticipant.getEntity().getDisplayName());
+            for (PixelmonWrapper pixelmonWrapper : pixelmonWrapperList1) {
+                System.out.println(pixelmonWrapper);
             }
+
+
+            battleParticipant.getEntity().sendMessage(new StringTextComponent("Deu certo " + battleParticipant.getEntity().getDisplayName()), battleParticipant.getEntity().getUUID());
+            if (battleParticipant.getTeamPokemon().isEmpty()) {
+                battleParticipant.getEntity().sendMessage(new StringTextComponent("Deu certo, part 2"), battleParticipant.getEntity().getUUID());
+            }
+
         }
+
+       /* for (PixelmonWrapper wrapper : pixelmonWrapperList) {
+            System.out.println(wrapper.getPokemonName());
+        }
+*/
+
     }
 }

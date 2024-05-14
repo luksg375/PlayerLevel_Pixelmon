@@ -19,7 +19,6 @@ import java.sql.SQLException;
 import java.util.Objects;
 import java.util.UUID;
 
-import static com.stalix.shardspixelmon.ModFile.LOGGER;
 
 public class PlayerLevelUpListener {
 
@@ -28,7 +27,7 @@ public class PlayerLevelUpListener {
 
         try(Connection conn = DatabaseConnection.getConnection()) {
 
-            ServerPlayerEntity playerEntity = playerMatch(event.getPlayer().getServer(), event.getPlayer().getLevel(), event.getPlayer().getGameProfile(), event.getPlayer().gameMode, conn, event.getPlayer().getUUID());
+            ServerPlayerEntity playerEntity = playerMatch(Objects.requireNonNull(event.getPlayer()).getServer(), event.getPlayer().getLevel(), event.getPlayer().getGameProfile(), event.getPlayer().gameMode, conn, event.getPlayer().getUUID());
             Pokemon pokemon = event.getPokemon();
 
             if (playerEntity instanceof PlayerLevel) {

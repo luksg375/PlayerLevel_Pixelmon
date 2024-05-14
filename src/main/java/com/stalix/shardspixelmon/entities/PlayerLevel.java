@@ -1,12 +1,9 @@
 package com.stalix.shardspixelmon.entities;
 
 import com.mojang.authlib.GameProfile;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerInteractionManager;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
 import java.sql.Connection;
@@ -17,7 +14,7 @@ import java.util.UUID;
 
 public class PlayerLevel extends ServerPlayerEntity {
 
-    private static int levelPlayer;
+    private int levelPlayer;
 
     public PlayerLevel(MinecraftServer p_i45285_1_, ServerWorld p_i45285_2_, GameProfile p_i45285_3_, PlayerInteractionManager p_i45285_4_, int level) {
         super(p_i45285_1_, p_i45285_2_, p_i45285_3_, p_i45285_4_);
