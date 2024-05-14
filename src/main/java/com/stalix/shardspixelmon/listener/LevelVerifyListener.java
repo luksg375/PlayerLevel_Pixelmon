@@ -53,19 +53,16 @@ public class LevelVerifyListener {
 
         battleParticipantList = Arrays.stream(event.participant1).collect(Collectors.toList());
 
-        List<PixelmonWrapper> pixelmonWrapperList1 = event.bc.getActivePokemon();
+        List<PixelmonWrapper> pixelmonWrapperList1;
+
 
         for (BattleParticipant battleParticipant : battleParticipantList) {
             System.out.println(battleParticipant);
             System.out.println(battleParticipant.getEntity().getDisplayName());
+            pixelmonWrapperList1 = event.bc.getTeamPokemon(battleParticipant);
+
             for (PixelmonWrapper pixelmonWrapper : pixelmonWrapperList1) {
                 System.out.println(pixelmonWrapper);
-            }
-
-
-            battleParticipant.getEntity().sendMessage(new StringTextComponent("Deu certo " + battleParticipant.getEntity().getDisplayName()), battleParticipant.getEntity().getUUID());
-            if (battleParticipant.getTeamPokemon().isEmpty()) {
-                battleParticipant.getEntity().sendMessage(new StringTextComponent("Deu certo, part 2"), battleParticipant.getEntity().getUUID());
             }
 
         }
