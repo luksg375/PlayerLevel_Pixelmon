@@ -21,11 +21,10 @@ import net.minecraftforge.fml.common.Mod;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.stream.Collectors;
 @Mod.EventBusSubscriber(Dist.DEDICATED_SERVER)
 public class LevelVerifyListener {
 
-    List<PixelmonWrapper> pixelmonWrapperList;
+    private boolean verifyUUID;
 
     @SubscribeEvent
     public void sendOutVerify(PokemonSendOutEvent.Pre event) {
@@ -50,24 +49,64 @@ public class LevelVerifyListener {
     @SubscribeEvent
     public void battleVerifyLevelPlayer(BattleStartedEvent event) {
 
+
+        PlayerParticipant playerParticipant = getPlayerParticipant(event);
+        if (playerParticipant == null) {
+            System.out.println("Uma entidade que não é um player começou uma batalha.");
+        } else {
+            if (playerParticipant instanceof PlayerParticipant) {
+
+                try (Connection conn = DatabaseConnection.getConnection()) {
+                    verifyUUID = PlayerLevel.verifyPlayerWithUUID(playerParticipant.player.getUUID(), conn);
+
+                    if (!verifyUUID) {
+                        return;
+                    }
+
+                        ServerPlayerEntity playerLevel = PlayerLevel.PlayerLevelConstructor(
+                                playerParticipant.player.getServer(),
+                                playerParticipant.player.getLevel(),
+                                playerParticipant.player.getGameProfile(),
+                                playerParticipant.player.gameMode,
+                                conn,
+                                playerParticipant.player.getUUID()
+                        );
+
+                        PlayerPartyStorage playerPartyStorages = playerParticipant.party;
+                        List<Pokemon> pokemons = playerPartyStorages.getTeam();
+
+                        for (Pokemon pokemon : pokemons) {
+                            checkLevelPokemonWithPlayer(pokemon, (PlayerLevel) playerLevel, playerParticipant);
+                            System.out.println(pokemon.getDisplayName());
+                        }
+                    } catch(SQLException e){
+                        e.printStackTrace();
+                    }
+                }
+        }
+    }
+
+    private void checkLevelPokemonWithPlayer(Pokemon pokemon, PlayerLevel playerLevel, PlayerParticipant playerParticipant) {
+        if (pokemon.getPokemonLevel() > playerLevel.getLevelPlayer()) {
+            if (pokemon.getHealth() != 0) {
+                pokemon.setHealth(0);
+                if (playerParticipant.player.connection != null) {
+                    playerParticipant.player.sendMessage(new StringTextComponent(
+                                    "O Pokémon " + pokemon.getDisplayName() + " não atendeu aos seus comandos e acabou se machucando. Seu nível: " + playerLevel.getLevelPlayer()),
+                            playerParticipant.player.getUUID()
+                    );
+                } else {}
+            } else { }
+        }
+    }
+
+    private PlayerParticipant getPlayerParticipant(BattleStartedEvent event) {
         List<PlayerParticipant> participants = event.bc.getPlayers();
 
-        PlayerParticipant player = event.bc.getPlayer((PlayerEntity) participants.get(0).getEntity());
-
-        if (player instanceof PlayerParticipant) {
-
-        PlayerPartyStorage playerPartyStorages = player.party;
-
-        List<Pokemon> pokemons = playerPartyStorages.getTeam();
-
-        List<PixelmonWrapper> pixelmonWrappers1 = event.bc.getActivePokemon();
-        System.out.println(pixelmonWrappers1.size());
-
-        for (Pokemon pokemon : pokemons) {
-                System.out.println(pokemon.getDisplayName());
-                player.player.sendMessage(new StringTextComponent("Nome do pokemon:" + pokemon.getDisplayName()), player.player.getUUID());
+        if (!participants.isEmpty()) {
+            PlayerParticipant player = event.bc.getPlayer((PlayerEntity) participants.get(0).getEntity());
+            return player;
         }
-
-        }
+        return null;
     }
 }

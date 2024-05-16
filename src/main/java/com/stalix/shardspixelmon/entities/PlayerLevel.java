@@ -14,7 +14,7 @@ import java.util.UUID;
 
 public class PlayerLevel extends ServerPlayerEntity {
 
-    private int levelPlayer;
+    private static int levelPlayer;
 
     public PlayerLevel(MinecraftServer p_i45285_1_, ServerWorld p_i45285_2_, GameProfile p_i45285_3_, PlayerInteractionManager p_i45285_4_, int level) {
         super(p_i45285_1_, p_i45285_2_, p_i45285_3_, p_i45285_4_);
@@ -32,6 +32,19 @@ public class PlayerLevel extends ServerPlayerEntity {
             } else {
                 System.out.println("Nenhum jogador encontrado!");
                 return null;
+            }
+        }
+    }
+
+    public static boolean verifyPlayerWithUUID(UUID uuid, Connection conn) throws SQLException {
+        try(PreparedStatement stmt = conn.prepareStatement("SELECT UUID FROM player_levels WHERE UUID = ?")) {
+            stmt.setString(1, String.valueOf(uuid));
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return true;
+            } else {
+                return false;
             }
         }
     }
