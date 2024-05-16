@@ -46,27 +46,26 @@ public class LevelVerifyListener {
         }
     }
 
+
     @SubscribeEvent
     public void battleVerifyLevelPlayer(BattleStartedEvent event) {
-        List<BattleParticipant> participants = Arrays.asList(event.participant1);
-        if (!(participants.get(0).getEntity().getUUID() == null)) {
-        List<PixelmonWrapper> pixelmonWrappers = event.bc.getTeamPokemon(event.participant1[0]);
-        System.out.println(pixelmonWrappers.size());
+
+        List<PlayerParticipant> participants = event.bc.getPlayers();
+
         PlayerParticipant player = event.bc.getPlayer((PlayerEntity) participants.get(0).getEntity());
-        List<PixelmonWrapper> pixelmonWrappers1 = player.getTeamPokemonList();
+
+        if (player instanceof PlayerParticipant) {
+
+        PlayerPartyStorage playerPartyStorages = player.party;
+
+        List<Pokemon> pokemons = playerPartyStorages.getTeam();
+
+        List<PixelmonWrapper> pixelmonWrappers1 = event.bc.getActivePokemon();
         System.out.println(pixelmonWrappers1.size());
-        for (PixelmonWrapper wrapper : pixelmonWrappers) {
-            System.out.println();
-            System.out.println("Wrapper 1");
-            System.out.println(wrapper.getPokemonLevelNum() + " " + wrapper.getRealNickname());
 
-        }
-
-        for (PixelmonWrapper wrapper : pixelmonWrappers1) {
-            System.out.println();
-            System.out.println("Wrapper 2");
-            System.out.println(wrapper.getPokemonLevelNum() + " " + wrapper.getRealNickname());
-
+        for (Pokemon pokemon : pokemons) {
+                System.out.println(pokemon.getDisplayName());
+                player.player.sendMessage(new StringTextComponent("Nome do pokemon:" + pokemon.getDisplayName()), player.player.getUUID());
         }
 
         }
