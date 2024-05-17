@@ -2,6 +2,7 @@ package com.stalix.shardspixelmon.listener;
 
 import com.pixelmonmod.pixelmon.api.events.BattleStartedEvent;
 import com.pixelmonmod.pixelmon.api.events.PokemonSendOutEvent;
+import com.pixelmonmod.pixelmon.api.events.battles.AttackEvent;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.storage.PlayerPartyStorage;
 import com.pixelmonmod.pixelmon.battles.controller.participants.BattleParticipant;
@@ -25,6 +26,7 @@ import java.util.*;
 public class LevelVerifyListener {
 
     private boolean verifyUUID;
+    private boolean cancelEvent;
 
     @SubscribeEvent
     public void sendOutVerify(PokemonSendOutEvent.Pre event) {
@@ -47,37 +49,41 @@ public class LevelVerifyListener {
 
 
     @SubscribeEvent
-    public void battleVerifyLevelPlayer(BattleStartedEvent event) {
+    public void battleVerifyLevelPlayer(AttackEvent.Use event) {
 
+        PixelmonWrapper wrapper = event.user;
+        Pokemon pokemonWrapper = wrapper.pokemon;
+        ServerPlayerEntity serverPlayerEntity = wrapper.getPlayerOwner();
 
-        PlayerParticipant playerParticipant = getPlayerParticipant(event);
-        if (playerParticipant == null) {
+        if (serverPlayerEntity == null) {
             System.out.println("Uma entidade que não é um player começou uma batalha.");
         } else {
-            if (playerParticipant instanceof PlayerParticipant) {
+            if (serverPlayerEntity instanceof ServerPlayerEntity) {
 
                 try (Connection conn = DatabaseConnection.getConnection()) {
-                    verifyUUID = PlayerLevel.verifyPlayerWithUUID(playerParticipant.player.getUUID(), conn);
+                    verifyUUID = PlayerLevel.verifyPlayerWithUUID(serverPlayerEntity.getUUID(), conn);
 
                     if (!verifyUUID) {
                         return;
                     }
 
                         ServerPlayerEntity playerLevel = PlayerLevel.PlayerLevelConstructor(
-                                playerParticipant.player.getServer(),
-                                playerParticipant.player.getLevel(),
-                                playerParticipant.player.getGameProfile(),
-                                playerParticipant.player.gameMode,
+                                serverPlayerEntity.getServer(),
+                                serverPlayerEntity.getLevel(),
+                                serverPlayerEntity.getGameProfile(),
+                                serverPlayerEntity.gameMode,
                                 conn,
-                                playerParticipant.player.getUUID()
+                                serverPlayerEntity.getUUID()
                         );
 
-                        PlayerPartyStorage playerPartyStorages = playerParticipant.party;
+                        PlayerPartyStorage playerPartyStorages = wrapper.entity.getPlayerParty();
                         List<Pokemon> pokemons = playerPartyStorages.getTeam();
 
                         for (Pokemon pokemon : pokemons) {
-                            checkLevelPokemonWithPlayer(pokemon, (PlayerLevel) playerLevel, playerParticipant);
-                            System.out.println(pokemon.getDisplayName());
+                            if(checkLevelPokemonWithPlayer(pokemon, (PlayerLevel) playerLevel, serverPlayerEntity)) {
+                                event.setCanceled(true);
+                            }
+                            System.out.println(pokemon.getDisplayName() + " " + event.attack);
                         }
                     } catch(SQLException e){
                         e.printStackTrace();
@@ -86,17 +92,21 @@ public class LevelVerifyListener {
         }
     }
 
-    private void checkLevelPokemonWithPlayer(Pokemon pokemon, PlayerLevel playerLevel, PlayerParticipant playerParticipant) {
+    private boolean checkLevelPokemonWithPlayer(Pokemon pokemon, PlayerLevel playerLevel, ServerPlayerEntity serverPlayerEntity) {
         if (pokemon.getPokemonLevel() > playerLevel.getLevelPlayer()) {
+            cancelEvent = true;
             if (pokemon.getHealth() != 0) {
                 pokemon.setHealth(0);
-                if (playerParticipant.player.connection != null) {
-                    playerParticipant.player.sendMessage(new StringTextComponent(
+                if (serverPlayerEntity.connection != null) {
+                    serverPlayerEntity.sendMessage(new StringTextComponent(
                                     "O Pokémon " + pokemon.getDisplayName() + " não atendeu aos seus comandos e acabou se machucando. Seu nível: " + playerLevel.getLevelPlayer()),
-                            playerParticipant.player.getUUID()
+                            serverPlayerEntity.getUUID()
                     );
-                } else {}
-            } else { }
+                }
+            }
+            return true;
+        } else {
+            return false;
         }
     }
 
