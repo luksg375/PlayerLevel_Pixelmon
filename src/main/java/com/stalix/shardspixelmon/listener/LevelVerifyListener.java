@@ -49,14 +49,14 @@ public class LevelVerifyListener {
 
 
     @SubscribeEvent
-    public void battleVerifyLevelPlayer(AttackEvent.Use event) {
+    public void battleVerifyLevelPlayer(AttackEvent event) {
 
         PixelmonWrapper wrapper = event.user;
         Pokemon pokemonWrapper = wrapper.pokemon;
         ServerPlayerEntity serverPlayerEntity = wrapper.getPlayerOwner();
 
         if (serverPlayerEntity == null) {
-            System.out.println("Uma entidade que não é um player começou uma batalha.");
+
         } else {
             if (serverPlayerEntity instanceof ServerPlayerEntity) {
 
@@ -82,8 +82,9 @@ public class LevelVerifyListener {
                         for (Pokemon pokemon : pokemons) {
                             if(checkLevelPokemonWithPlayer(pokemon, (PlayerLevel) playerLevel, serverPlayerEntity)) {
                                 event.setCanceled(true);
+                                wrapper.animateHP(true);
                             }
-                            System.out.println(pokemon.getDisplayName() + " " + event.attack);
+                            System.out.println(pokemon.getDisplayName() + " " + event.getAttack());
                         }
                     } catch(SQLException e){
                         e.printStackTrace();
@@ -95,8 +96,8 @@ public class LevelVerifyListener {
     private boolean checkLevelPokemonWithPlayer(Pokemon pokemon, PlayerLevel playerLevel, ServerPlayerEntity serverPlayerEntity) {
         if (pokemon.getPokemonLevel() > playerLevel.getLevelPlayer()) {
             cancelEvent = true;
-            if (pokemon.getHealth() != 0) {
-                pokemon.setHealth(0);
+            if (!pokemon.isFainted()) {
+                pokemon.setHealthPercentage(0);
                 if (serverPlayerEntity.connection != null) {
                     serverPlayerEntity.sendMessage(new StringTextComponent(
                                     "O Pokémon " + pokemon.getDisplayName() + " não atendeu aos seus comandos e acabou se machucando. Seu nível: " + playerLevel.getLevelPlayer()),
